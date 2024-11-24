@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // useParams 임포트
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const Detail = () => {
-  const { bookId } = useParams(); // URL 파라미터에서 bookId 추출
+  const { bookId } = useParams();
   const [book, setBook] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ rating: "", content: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // 로그인 상태 확인 변수
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -20,8 +20,8 @@ const Detail = () => {
         const data = response.data;
 
         if (data.statusCode === 200) {
-          setBook(data.result.book); // 책 정보 설정
-          setReviews(data.result.reviewList); // 리뷰 목록 설정
+          setBook(data.result.book);
+          setReviews(data.result.reviewList);
         } else {
           setError("책 정보를 불러오는 데 실패했습니다.");
         }
@@ -39,7 +39,6 @@ const Detail = () => {
     }
   }, [bookId]);
 
-  // 리뷰 작성 처리
   const handleReviewChange = (e) => {
     const { name, value } = e.target;
     setNewReview({ ...newReview, [name]: value });
@@ -48,34 +47,60 @@ const Detail = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
 
-    // 입력 값 검증
     if (!newReview.content || !newReview.rating) {
       alert("리뷰 내용을 입력하고 평점을 선택해주세요.");
       return;
     }
 
     try {
-      // 리뷰 작성 API 호출
       const response = await axios.post(
         `http://localhost:8181/board/detail/${bookId}/create`,
         newReview,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // 로그인된 사용자의 토큰을 보내야 함
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
       if (response.data.statusCode === 200) {
-        // 리뷰 작성 성공 시, 리뷰 목록에 새 리뷰 추가
         setReviews((prevReviews) => [response.data.result, ...prevReviews]);
-        setNewReview({ rating: "", content: "" }); // 리뷰 작성 후 폼 초기화
+        setNewReview({ rating: "", content: "" });
       } else {
         setError("리뷰 작성에 실패했습니다.");
       }
     } catch (err) {
       console.error(err);
       setError("리뷰 작성 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleLikeToggle = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8181/board/detail/${bookId}/like`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.data.statusCode === 200) {
+        setBook((prevBook) => ({
+          ...prevBook,
+          liked: !prevBook.liked,
+          likeCount: prevBook.liked
+            ? prevBook.likeCount - 1
+            : prevBook.likeCount + 1,
+        }));
+      } else {
+        alert("좋아요 처리에 실패했습니다.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("좋아요 처리 중 오류가 발생했습니다.");
     }
   };
 
@@ -111,7 +136,7 @@ const Detail = () => {
           <strong>출판사:</strong> {book.pub}
         </p>
         <p>
-          <strong>평점:</strong> {book.rating} / 10
+          <strong>평점:</strong> {(book.rating / book.reviewCount).toFixed(1)}
         </p>
         <p>
           <strong>리뷰수:</strong> {book.reviewCount}
@@ -122,7 +147,9 @@ const Detail = () => {
       </div>
 
       <div className="like-status">
-        <p>{book.liked ? "이미 좋아요를 눌렀습니다." : "좋아요를 누르세요!"}</p>
+        <button onClick={handleLikeToggle} className="like-button">
+          {book.liked ? "좋아요 취소" : "좋아요"}
+        </button>
       </div>
 
       <h2>리뷰 목록</h2>

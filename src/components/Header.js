@@ -13,10 +13,23 @@ function Header({ isLoggedIn, name, onLogout }) {
     navigate("/sign-in"); // 로그인 페이지로 이동
   };
 
+  const handleTitleClick = () => {
+    navigate("/"); // RE:BOOK 클릭 시 홈페이지로 이동
+  };
+
+  const handleBookList = () => {
+    navigate("/board/list"); // 책 목록 페이지로 이동
+  };
+
   return (
     <header style={styles.header}>
-      <h1 style={styles.title}>My Website</h1>
+      <h1 style={styles.title} onClick={handleTitleClick}>
+        RE:BOOK
+      </h1>
       <div style={styles.userInfo}>
+        <button onClick={handleBookList} style={styles.button}>
+          책 목록
+        </button>
         {isLoggedIn ? (
           <>
             <span style={styles.welcome}>Welcome, {name}!</span>
@@ -46,6 +59,7 @@ const styles = {
   title: {
     fontSize: "24px",
     margin: 0,
+    cursor: "pointer", // 클릭 가능하다는 시각적 힌트를 추가
   },
   userInfo: {
     display: "flex",
