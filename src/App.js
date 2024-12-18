@@ -33,27 +33,17 @@ function App() {
   // 로그인한 경우 메인 화면 표시
   return (
     <div className="app-container">
-      <div className="server-sidebar">
-        <ServerList
-          onSelectServer={handleSelectServer}
-          selectedServer={selectedServer}
-        />
-      </div>
-      <div className="channel-sidebar">
-        <ChatRoomList
-          serverId={selectedServer}
-          onSelectChannel={handleSelectChannel}
-          selectedChannel={selectedChannel}
-        />
-      </div>
+      <ServerList
+        onSelectServer={handleSelectServer}
+        selectedServer={selectedServer}
+      />
+      <ChatRoomList
+        serverId={selectedServer}
+        onSelectChannel={handleSelectChannel}
+        selectedChannel={selectedChannel}
+      />
       <div className="main-content">
-        {selectedChannel ? (
-          <div className="chat-room">
-            <ChatRoom serverId={selectedServer} channelId={selectedChannel} />
-          </div>
-        ) : (
-          <div className="welcome-message">채팅방을 선택하세요</div>
-        )}
+        <ChatRoom serverId={selectedServer} channelId={selectedChannel} />
       </div>
     </div>
   );

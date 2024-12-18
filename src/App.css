@@ -19,33 +19,31 @@ body {
   background-color: #313338;
 }
 
-/* 서버 사이드바 */
+/* 서버 리스트 영역 */
 .server-sidebar {
-  width: 80px;
-  min-width: 80px;
+  width: 72px;
+  min-width: 72px;
   background-color: #1e1f22;
+  padding: 12px 0;
   flex-shrink: 0;
 }
 
-/* 채널 사이드바 */
+/* 채널 리스트 영역 */
 .channel-sidebar {
   width: 240px;
   min-width: 240px;
   background-color: #2b2d31;
   flex-shrink: 0;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-/* 메인 컨텐츠 영역 */
+/* 메인 채팅 영역 */
 .main-content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
   background-color: #313338;
   min-width: 400px;
-  width: calc(100% - 320px);
-  margin-right: 0;
-  overflow-x: hidden;
   position: relative;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 /* 환영 메시지 */
