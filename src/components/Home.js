@@ -57,8 +57,8 @@ function Home() {
 
   useEffect(() => {
     console.log(API_BASE_URL);
-    
-    fetch(`${API_BASE_URL}`)
+
+    fetch(`http://localhost:8181/`)
       .then((res) => res.json())
       .then((result) => {
         if (result.result) {
